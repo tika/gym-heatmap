@@ -5,22 +5,48 @@ import * as THREE from "three";
 import { OrbitControls, Points, Text } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
-type RawPoint = {
+type Point = {
   x: number;
   y: number;
   z: number;
   type: "person" | "machine";
-  time: number;
+  time: Date;
   paired: boolean; // if the person is using the machine
 };
 
-type Point = Omit<RawPoint, "time">;
-
 const points: Point[] = [
-  { x: 0, y: 0, z: 0, type: "machine", paired: false }, // Example points, replace with your array
-  { x: 0.5, y: 0, z: 1, type: "person", paired: false },
-  { x: 5, y: 0, z: 0, type: "machine", paired: false },
-  { x: 5.5, y: 0, z: 0.5, type: "person", paired: false },
+  {
+    x: 0,
+    y: 0,
+    z: 0,
+    type: "machine",
+    paired: false,
+    time: new Date("2025-02-22T10:00:00"),
+  }, // Example points, replace with your array
+  {
+    x: 0.5,
+    y: 0,
+    z: 1,
+    type: "person",
+    paired: false,
+    time: new Date("2025-02-22T10:00:01"),
+  },
+  {
+    x: 5,
+    y: 0,
+    z: 0,
+    type: "machine",
+    paired: false,
+    time: new Date("2025-02-22T10:00:02"),
+  },
+  {
+    x: 5.5,
+    y: 0,
+    z: 0.5,
+    type: "person",
+    paired: false,
+    time: new Date("2025-02-22T10:00:03"),
+  },
 ];
 
 const boxSize = 1;
