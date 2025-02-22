@@ -31,9 +31,21 @@ export function Timeline() {
 
   // TODO: take the 3d mapping and take images so that there are 10 images (thus there will be 10% of the timeline that is that image)
 
+  // Take teh slide % and show it in time
+  const time = new Date(
+    timeRange.startTime.getTime() +
+      (timeRange.endTime.getTime() - timeRange.startTime.getTime()) *
+        (slidePercentage / 100)
+  );
+
   return (
     <div className="w-full border-2 border-gray-400 rounded-md p-1">
-      <p>{slidePercentage}%</p>
+      <p>
+        {time.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+      </p>
       <div
         key={1}
         className="flex w-full"
@@ -46,14 +58,8 @@ export function Timeline() {
         onMouseLeave={() => setSlidePercentage(0)}
       >
         {slices.map((it, index) => (
-          <div className="relative h-12 w-full">
-            <Image
-              key={index}
-              src={it}
-              alt="gym"
-              layout="fill"
-              objectFit="cover"
-            />
+          <div className="relative h-12 w-full" key={index}>
+            <Image src={it} alt="gym" layout="fill" objectFit="cover" />
           </div>
         ))}
       </div>
