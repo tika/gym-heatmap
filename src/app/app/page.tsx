@@ -1,8 +1,8 @@
 "use client";
 
-import { Space } from "@/components/space";
+import { Point, Space } from "@/components/space";
 import { Timeline, TimeRange } from "@/components/timeline";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function App() {
   const [timeRange, setTimeRange] = useState<TimeRange>({
@@ -13,6 +13,43 @@ export default function App() {
   const [selectedWorkout, setSelectedWorkout] = useState<
     "Push" | "Pull" | "Legs"
   >("Push");
+
+  // Load fake gym data from fake_gym_data.csv
+  const [gymData, setGymData] = useState<Point[]>([]);
+
+  useEffect(() => {
+    const loadGymData = async () => {
+      const rows = await fetch("/fake_gym_data.csv").then((res) => res.text());
+      const data = rows
+        .split("\n")
+        .slice(1)
+        .map((row) => {
+          const data = row.split(",");
+          // Convert the numeric time to a Date object by adding seconds to the base time
+          const baseTime = new Date("2025-02-22T10:00:00");
+          const timeInSeconds = parseInt(data[3]);
+          const actualTime = new Date(
+            baseTime.getTime() + timeInSeconds * 1000
+          );
+
+          console.log(actualTime);
+
+          return {
+            x: parseFloat(data[0]),
+            y: parseFloat(data[1]),
+            z: parseFloat(data[2]),
+            time: actualTime,
+            object: data[4] as "person" | "machine",
+            paired: data[5] === "true",
+            role: data[6] as "person" | "machine",
+          } satisfies Point;
+        });
+      setGymData(data as Point[]);
+    };
+    loadGymData();
+  }, []);
+
+  console.log(gymData);
 
   return (
     <div className="flex">
@@ -52,13 +89,13 @@ export default function App() {
         </div>
         <div>
           <p className="text-2xl font-bold">Time</p>
-          <p>16:00 -> 17:00</p>
+          <p>16:00 - 17:00</p>
         </div>
       </div>
       <div className="relative w-3/4 h-full">
         <p>{selectedTime.toLocaleTimeString()}</p>
         <div className="w-full h-[60vh]">
-          <Space selectedTime={selectedTime} />
+          <Space selectedTime={selectedTime} gymData={gymData} />
         </div>
         <Timeline
           timeRange={timeRange}
