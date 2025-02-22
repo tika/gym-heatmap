@@ -2,4 +2,4 @@
 
 ## JumboHack 2025
 
-Built with Daniel Siegel & Anubhav Sinha
+Built by Tika Capon, Anubhav Sinha, Daniel Siegel, Dean Hu, Marco Dorazio
