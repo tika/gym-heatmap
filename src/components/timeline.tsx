@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Space } from "@/components/space";
 import { useEffect, useMemo, useState } from "react";
 
 export type TimeRange = {
@@ -13,26 +13,24 @@ type TimelineProps = {
   onSelectedTimeChange: (time: Date) => void;
 };
 
+const generateTimeSlices = (timeRange: TimeRange): Date[] => {
+  const { startTime, endTime } = timeRange;
+  const timeSpan = endTime.getTime() - startTime.getTime();
+  const interval = timeSpan / 9; // 9 intervals for 10 points
+
+  return Array.from(
+    { length: 10 },
+    (_, i) => new Date(startTime.getTime() + interval * i)
+  );
+};
+
 export function Timeline({ timeRange, onSelectedTimeChange }: TimelineProps) {
-  const [slices, setSlices] = useState<string[]>([
-    "https://picsum.photos/id/237/1920/1080",
-    "https://picsum.photos/id/237/1920/1080",
-    "https://picsum.photos/id/237/1920/1080",
-    "https://picsum.photos/id/237/1920/1080",
-    "https://picsum.photos/id/237/1920/1080",
-    "https://picsum.photos/id/237/1920/1080",
-    "https://picsum.photos/id/237/1920/1080",
-    "https://picsum.photos/id/237/1920/1080",
-    "https://picsum.photos/id/237/1920/1080",
-    "https://picsum.photos/id/237/1920/1080",
-    "https://picsum.photos/id/237/1920/1080",
-    "https://picsum.photos/id/237/1920/1080",
-  ]);
+  const timeSlices = useMemo(() => generateTimeSlices(timeRange), [timeRange]);
   const [slidePercentage, setSlidePercentage] = useState(0);
 
-  // TODO: take the 3d mapping and take images so that there are 10 images (thus there will be 10% of the timeline that is that image)
+  // Each slice will be 10% of the timeline
+  const sliceWidth = "10%";
 
-  // Take the slide % and show it in time
   const selectedTime = useMemo(
     () =>
       new Date(
@@ -45,12 +43,11 @@ export function Timeline({ timeRange, onSelectedTimeChange }: TimelineProps) {
 
   useEffect(() => {
     onSelectedTimeChange(selectedTime);
-  }, [selectedTime]);
+  }, [selectedTime, onSelectedTimeChange]);
 
   return (
     <div className="w-full border-2 border-gray-400 rounded-md p-1">
       <div
-        key={1}
         className="flex w-full relative"
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
@@ -63,15 +60,13 @@ export function Timeline({ timeRange, onSelectedTimeChange }: TimelineProps) {
           className="absolute top-0 bottom-0 w-0.5 bg-blue-500 z-10 transition-all duration-[100ms] ease-out"
           style={{ left: `${slidePercentage}%` }}
         />
-        {slices.map((it, index) => (
-          <div className="relative h-12 w-full" key={index}>
-            <Image
-              src={it}
-              alt="gym"
-              layout="fill"
-              objectFit="cover"
-              draggable={false}
-            />
+        {timeSlices.map((time, index) => (
+          <div
+            className="relative h-12"
+            style={{ width: sliceWidth }}
+            key={time.getTime()}
+          >
+            <Space isPreview={true} selectedTime={time} />
           </div>
         ))}
       </div>

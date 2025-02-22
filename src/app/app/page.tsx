@@ -15,7 +15,7 @@ export default function App() {
     <div>
       <p>{selectedTime.toLocaleTimeString()}</p>
       <div className="w-full h-[60vh]">
-        <Space />
+        <Space selectedTime={selectedTime} />
       </div>
       <Timeline timeRange={timeRange} onSelectedTimeChange={setSelectedTime} />
     </div>
