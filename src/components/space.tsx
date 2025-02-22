@@ -95,7 +95,7 @@ export function Space({ selectedTime, isPreview }: SpaceProps) {
     <Canvas
       camera={{
         position: isPreview
-          ? [floorSize / 2, 0, -5] // Fixed "screenshot" position
+          ? [floorSize / 2, 8, -5] // Fixed "screenshot" position
           : [0, 2, 3], // Interactive view position
         fov: isPreview ? 60 : 50,
         near: 0.1,
@@ -103,27 +103,29 @@ export function Space({ selectedTime, isPreview }: SpaceProps) {
       }}
     >
       <ambientLight />
-      <OrbitControls
-        minDistance={2}
-        maxDistance={50}
-        minPolarAngle={Math.PI / 4}
-        maxPolarAngle={Math.PI / 2.1}
-        enableDamping={true}
-        dampingFactor={0.05}
-        target={[floorSize / 2, 0, floorSize / 2]}
-        onChange={(e) => {
-          if (!e) return;
-          const controls = e.target;
-          const minY = -boxSize / 2;
-          if (controls.target.y < minY) {
-            controls.target.y = minY;
-            controls.object.position.y = Math.max(
-              controls.object.position.y,
-              minY
-            );
-          }
-        }}
-      />
+      {!isPreview && (
+        <OrbitControls
+          minDistance={2}
+          maxDistance={50}
+          minPolarAngle={Math.PI / 4}
+          maxPolarAngle={Math.PI / 2.1}
+          enableDamping={true}
+          dampingFactor={0.05}
+          target={[floorSize / 2, 0, floorSize / 2]}
+          onChange={(e) => {
+            if (!e) return;
+            const controls = e.target;
+            const minY = -boxSize / 2;
+            if (controls.target.y < minY) {
+              controls.target.y = minY;
+              controls.object.position.y = Math.max(
+                controls.object.position.y,
+                minY
+              );
+            }
+          }}
+        />
+      )}
 
       <gridHelper
         args={[100, 100, "#444444", "#222222"]}
