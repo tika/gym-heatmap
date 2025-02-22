@@ -2,7 +2,9 @@
 
 import { Point, Space } from "@/components/space";
 import { Timeline, TimeRange } from "@/components/timeline";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+const TIME_WINDOW = 30; // seconds before and after current time
 
 export default function App() {
   const [timeRange, setTimeRange] = useState<TimeRange>({
@@ -15,7 +17,18 @@ export default function App() {
   >("Push");
 
   // Load fake gym data from fake_gym_data.csv
-  const [gymData, setGymData] = useState<Point[]>([]);
+  const [allGymData, setAllGymData] = useState<Point[]>([]);
+
+  // Filter data around the selected time
+  const visibleGymData = useMemo(() => {
+    if (!allGymData.length) return [];
+
+    const selectedTimeMs = selectedTime.getTime();
+    return allGymData.filter((point) => {
+      const timeDiff = Math.abs(point.time.getTime() - selectedTimeMs) / 1000;
+      return timeDiff <= TIME_WINDOW;
+    });
+  }, [allGymData, selectedTime]);
 
   useEffect(() => {
     const loadGymData = async () => {
@@ -44,12 +57,12 @@ export default function App() {
             role: data[6] as "person" | "machine",
           } satisfies Point;
         });
-      setGymData(data as Point[]);
+      setAllGymData(data as Point[]);
     };
     loadGymData();
   }, []);
 
-  console.log(gymData);
+  console.log(visibleGymData);
 
   return (
     <div className="flex">
@@ -95,7 +108,7 @@ export default function App() {
       <div className="relative w-3/4 h-full">
         <p>{selectedTime.toLocaleTimeString()}</p>
         <div className="w-full h-[60vh]">
-          <Space selectedTime={selectedTime} gymData={gymData} />
+          <Space selectedTime={selectedTime} gymData={visibleGymData} />
         </div>
         <Timeline
           timeRange={timeRange}
