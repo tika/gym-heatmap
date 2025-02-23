@@ -25,6 +25,7 @@ const days = ["M", "T", "W", "T", "F", "S", "S"];
 type WorkoutSelectProps = {
   onNext: () => void;
   makeWorkoutPlan: (workoutType: string | undefined, duration: number) => void;
+  setSummary: (summary: string) => void;
 };
 
 type Schedule = {
@@ -46,6 +47,7 @@ type APIResponse = {
 export type WorkoutData = {
   totalDuration: number;
   schedule: Schedule[];
+  summary?: string;
 };
 
 export function WorkoutSelect({ onNext, makeWorkoutPlan }: WorkoutSelectProps) {
@@ -92,6 +94,11 @@ export function WorkoutSelect({ onNext, makeWorkoutPlan }: WorkoutSelectProps) {
       if (!summaryResponse.ok) {
         throw new Error("Failed to summarize workout");
       }
+
+      const data = await summaryResponse.json();
+
+      // set summary
+      setSummary(data.summary);
 
       // Second call to create workout plan
       makeWorkoutPlan(workoutType?.toLowerCase(), parseInt(duration));

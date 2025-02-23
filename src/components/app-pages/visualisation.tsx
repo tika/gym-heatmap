@@ -25,7 +25,7 @@ type VisualisationProps = {
 export function Visualisation({ onBack, workoutData }: VisualisationProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [timeRange, setTimeRange] = useState<TimeRange>({
-    startTime: new Date("2025-02-23T16:00:00"), // 10am
+    startTime: new Date(), // 10am
     endTime: new Date("2025-02-23T18:00:00"), // 11am
   });
   const [selectedTime, setSelectedTime] = useState<Date>(timeRange.startTime);
@@ -53,7 +53,7 @@ export function Visualisation({ onBack, workoutData }: VisualisationProps) {
         .map((row) => {
           const data = row.split(",");
           // Convert the numeric time to a Date object by adding seconds to the base time
-          const baseTime = new Date("2025-02-22T10:00:00");
+          const baseTime = new Date();
           const timeInSeconds = parseInt(data[3]);
           const actualTime = new Date(
             baseTime.getTime() + timeInSeconds * 1000
@@ -86,6 +86,7 @@ export function Visualisation({ onBack, workoutData }: VisualisationProps) {
       </div>
       <div className="relative w-full md:w-3/4 h-full flex flex-col items-center">
         <div className="w-full h-[40vh] md:h-[60vh] border rounded-md">
+          <p>{visibleGymData.length}</p>
           <Space selectedTime={selectedTime} gymData={visibleGymData} />
         </div>
         <Timeline

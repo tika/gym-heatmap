@@ -15,10 +15,13 @@ type MachineTimelineProps = {
   className?: string;
 };
 
-const formatTime = (minutes: number) => {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
+const formatTime = (seconds: number) => {
+  const date = new Date();
+  date.setSeconds(date.getSeconds() + seconds);
+  return date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };
 
 export const MachineTimeline = ({

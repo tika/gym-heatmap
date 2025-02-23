@@ -52,10 +52,14 @@ export default function App() {
   const [workoutSchedule, setWorkoutSchedule] = useState<WorkoutData | null>(
     null
   ); // if null then probably loading..
+  const [workoutSummary, setWorkoutSummary] = useState<string | null>(null);
 
   return isWorkoutSelected ? (
     <WorkoutSelect
       onNext={() => setIsWorkoutSelected(false)}
+      setSummary={(summary) => {
+        setWorkoutSummary(summary);
+      }}
       makeWorkoutPlan={(workoutType, duration) => {
         fetch(process.env.NEXT_PUBLIC_BACKEND_API as string, {
           method: "POST",
@@ -85,6 +89,7 @@ export default function App() {
     <Visualisation
       onBack={() => setIsWorkoutSelected(true)}
       workoutData={workoutSchedule}
+      workoutSummary={workoutSummary}
     />
   );
 }

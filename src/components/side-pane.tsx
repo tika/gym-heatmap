@@ -13,18 +13,26 @@ type SidePaneProps = {
 export function SidePane({ timeRange, onBack, workoutData }: SidePaneProps) {
   if (!workoutData) {
     return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground mt-2">
-          Loading workout data...
-        </p>
+      <div className="h-full">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" onClick={onBack}>
+            <ArrowLeft />
+            <span>Change Workout</span>
+          </Button>
+        </div>
+        <div className="flex flex-col items-center justify-center h-full">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground mt-2 text-center">
+            Loading workout data (~30 seconds)...
+          </p>
+        </div>
       </div>
     );
   }
 
   const totalDuration = workoutData?.totalDuration ?? 0;
-  const hours = Math.floor(totalDuration / 60);
-  const minutes = totalDuration % 60;
+  const hours = Math.floor(totalDuration / 3600);
+  const minutes = Math.floor((totalDuration % 3600) / 60);
 
   return (
     <div>
@@ -38,6 +46,10 @@ export function SidePane({ timeRange, onBack, workoutData }: SidePaneProps) {
       <p className="text-2xl font-bold mt-4">Workout Details</p>
 
       <div className="flex flex-col gap-4">
+        {workoutData.summary && (
+          <p className="text-lg text-white">{workoutData.summary}</p>
+        )}
+
         <div className="flex flex-col gap-2">
           <p className="text-lg text-white">Total Duration</p>
           <p className="text-sm text-gray-400">
@@ -52,14 +64,6 @@ export function SidePane({ timeRange, onBack, workoutData }: SidePaneProps) {
             className="mt-4"
           />
         )}
-
-        <div>
-          <p className="text-2xl font-bold">Time Window</p>
-          <p className="text-sm text-gray-400">
-            {timeRange.startTime.getHours().toString().padStart(2, "0")}:00 →{" "}
-            {timeRange.endTime.getHours().toString().padStart(2, "0")}:00
-          </p>
-        </div>
       </div>
     </div>
   );
