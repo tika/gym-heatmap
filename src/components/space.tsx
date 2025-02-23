@@ -13,6 +13,7 @@ export type Point = {
   role: "person" | "machine";
   time: Date;
   paired: number; // 0 = no, 1 = yes
+  state: "traveling" | "waiting" | "using" | "finished";
 };
 
 const boxSize = 1;
@@ -80,7 +81,7 @@ export function Space({ selectedTime, isPreview, gymData }: SpaceProps) {
             <Text
               position={[boxSize / 2, boxSize / 2, boxSize / 2]} // Adjusted to be relative to the group
               fontSize={fontSize}
-              color="#00ff00"
+              color="#ffffff"
               anchorX="center"
               anchorY="middle"
             >
@@ -92,7 +93,8 @@ export function Space({ selectedTime, isPreview, gymData }: SpaceProps) {
         {gymData
           ?.filter(({ role }) => role === "person")
           .filter(({ time }) => time.toString() === selectedTime.toString())
-          .map(({ x, y, z }, index) => (
+          .filter(({ state }) => state !== "finished")
+          .map(({ x, y, z, state }, index) => (
             <mesh key={index} position={[x, y, z]}>
               <sphereGeometry args={[0.1, 4, 4]} />
               <meshStandardMaterial color="#ffffff" />

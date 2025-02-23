@@ -53,6 +53,7 @@ export function Visualisation() {
             object: data[4] as "person" | "machine",
             paired: parseFloat(data[5]),
             role: data[6] as "person" | "machine",
+            state: data[7] as "traveling" | "waiting" | "using",
           } satisfies Point;
         });
       setAllGymData(data as Point[]);
@@ -101,8 +102,7 @@ export function Visualisation() {
           <p>16:00 - 17:00</p>
         </div>
       </div>
-      <div className="relative w-3/4 h-full">
-        <p>{selectedTime.toLocaleTimeString()}</p>
+      <div className="relative w-3/4 h-full flex flex-col items-center">
         <div className="w-full h-[60vh]">
           <Space selectedTime={selectedTime} gymData={visibleGymData} />
         </div>
@@ -110,6 +110,9 @@ export function Visualisation() {
           timeRange={timeRange}
           onSelectedTimeChange={setSelectedTime}
         />
+        <p className="font-semibold mt-2">
+          Typical @ {selectedTime.toLocaleTimeString()}
+        </p>
       </div>
     </div>
   );

@@ -27,7 +27,6 @@ Leg:
 - Leg Curl 1
 - Calf Raise 1
  */
-type Workout = {};
 
 export default function App() {
   const [selectedWorkout, setSelectedWorkout] = useState(true);
