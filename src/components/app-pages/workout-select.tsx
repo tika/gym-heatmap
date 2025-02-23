@@ -4,6 +4,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 const days = ["M", "T", "W", "T", "F", "S", "S"];
@@ -47,12 +48,12 @@ export function WorkoutSelect({ onNext }: WorkoutSelectProps) {
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-2xl mx-auto space-y-8">
-        <a
+        <Link
           className={buttonVariants({ variant: "outline", size: "icon" })}
           href="/"
         >
           <ArrowLeft />
-        </a>
+        </Link>
         <h1 className="text-4xl font-bold text-foreground">Create workout</h1>
 
         <form

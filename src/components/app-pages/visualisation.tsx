@@ -13,11 +13,13 @@ type VisualisationProps = {
 };
 
 export function Visualisation(props: VisualisationProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [timeRange, setTimeRange] = useState<TimeRange>({
     startTime: new Date("2025-02-22T10:00:00"), // 10am
     endTime: new Date("2025-02-22T11:00:00"), // 11am
   });
   const [selectedTime, setSelectedTime] = useState<Date>(timeRange.startTime);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedWorkout, setSelectedWorkout] = useState<
     "Push" | "Pull" | "Legs"
   >("Push");

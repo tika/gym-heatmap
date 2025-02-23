@@ -107,7 +107,7 @@ export function Timeline({ timeRange, onSelectedTimeChange }: TimelineProps) {
             willChange: "left",
           }}
         />
-        {timeSlices.map((time, index) => (
+        {timeSlices.map((time) => (
           <div
             className="relative h-12"
             style={{ width: "10%" }}

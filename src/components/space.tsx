@@ -141,7 +141,7 @@ export function Space({ selectedTime, isPreview, gymData }: SpaceProps) {
             ?.filter(({ role }) => role === "person")
             .filter(({ time }) => time.toString() === selectedTime.toString())
             .filter(({ state }) => state !== "finished")
-            .map(({ x, y, z, state }, index) => (
+            .map(({ x, y, z }, index) => (
               <mesh key={index} position={[x, y, z]}>
                 <sphereGeometry args={[isMobile ? 0.15 : 0.1, 4, 4]} />
                 <meshStandardMaterial color="#ffffff" />
