@@ -105,7 +105,7 @@ export function Visualisation(props: VisualisationProps) {
           onSelectedTimeChange={setSelectedTime}
         />
         <p className="font-semibold mt-2">
-          Typical @ {selectedTime.toLocaleTimeString()}
+          Typical Activity @ {selectedTime.toLocaleTimeString()}
         </p>
       </div>
     </div>

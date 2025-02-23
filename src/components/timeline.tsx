@@ -1,7 +1,7 @@
 "use client";
 
-import { Space } from "@/components/space";
-import { useEffect, useMemo, useState } from "react";
+import { TimelinePreview } from "@/components/timeline-preview";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export type TimeRange = {
   startTime: Date;
@@ -25,11 +25,12 @@ const generateTimeSlices = (timeRange: TimeRange): Date[] => {
 };
 
 export function Timeline({ timeRange, onSelectedTimeChange }: TimelineProps) {
-  const timeSlices = useMemo(() => generateTimeSlices(timeRange), [timeRange]);
+  const timelineRef = useRef<HTMLDivElement>(null);
   const [slidePercentage, setSlidePercentage] = useState(0);
+  const rafRef = useRef<number>(0);
+  const isDraggingRef = useRef(false);
 
-  // Each slice will be 10% of the timeline
-  const sliceWidth = "10%";
+  const timeSlices = useMemo(() => generateTimeSlices(timeRange), [timeRange]);
 
   const selectedTime = useMemo(
     () =>
@@ -41,32 +42,78 @@ export function Timeline({ timeRange, onSelectedTimeChange }: TimelineProps) {
     [slidePercentage, timeRange]
   );
 
+  const updateSliderPosition = useCallback((clientX: number) => {
+    if (!timelineRef.current) return;
+
+    const rect = timelineRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const percentage = Math.min(Math.max((x / rect.width) * 100, 0), 100);
+
+    rafRef.current = requestAnimationFrame(() => {
+      setSlidePercentage(percentage);
+    });
+  }, []);
+
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      isDraggingRef.current = true;
+      timelineRef.current?.setPointerCapture(e.pointerId);
+      updateSliderPosition(e.clientX);
+    },
+    [updateSliderPosition]
+  );
+
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isDraggingRef.current) return;
+      updateSliderPosition(e.clientX);
+    },
+    [updateSliderPosition]
+  );
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    isDraggingRef.current = false;
+    timelineRef.current?.releasePointerCapture(e.pointerId);
+  }, []);
+
   useEffect(() => {
     onSelectedTimeChange(selectedTime);
   }, [selectedTime, onSelectedTimeChange]);
 
+  // Cleanup RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="w-full border-2 border-gray-400 rounded-md p-1">
       <div
-        className="flex w-full relative"
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const percentage = Math.min(Math.max((x / rect.width) * 100, 0), 100);
-          setSlidePercentage(Math.round(percentage * 100) / 100);
-        }}
+        className="flex w-full relative cursor-grab active:cursor-grabbing"
+        ref={timelineRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
       >
         <div
-          className="absolute top-0 bottom-0 w-0.5 bg-blue-500 z-10 transition-all duration-[100ms] ease-out"
-          style={{ left: `${slidePercentage}%` }}
+          className="absolute top-0 bottom-0 w-0.5 bg-blue-500 z-10"
+          style={{
+            left: `${slidePercentage}%`,
+            transform: "translateX(-50%)",
+            willChange: "left",
+          }}
         />
         {timeSlices.map((time, index) => (
           <div
             className="relative h-12"
-            style={{ width: sliceWidth }}
+            style={{ width: "10%" }}
             key={time.getTime()}
           >
-            <Space isPreview={true} selectedTime={time} />
+            <TimelinePreview time={time} />
           </div>
         ))}
       </div>
