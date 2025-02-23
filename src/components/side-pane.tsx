@@ -1,15 +1,31 @@
+import { WorkoutData } from "@/components/app-pages/workout-select";
 import { MachineTimeline } from "@/components/machine-timeline";
 import { TimeRange } from "@/components/timeline";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 
-export function SidePane({
-  timeRange,
-  onBack,
-}: {
+type SidePaneProps = {
   timeRange: TimeRange;
   onBack: () => void;
-}) {
+  workoutData: WorkoutData | null;
+};
+
+export function SidePane({ timeRange, onBack, workoutData }: SidePaneProps) {
+  if (!workoutData) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-sm text-muted-foreground mt-2">
+          Loading workout data...
+        </p>
+      </div>
+    );
+  }
+
+  const totalDuration = workoutData?.totalDuration ?? 0;
+  const hours = Math.floor(totalDuration / 60);
+  const minutes = totalDuration % 60;
+
   return (
     <div>
       <div className="flex items-center gap-2">
@@ -22,31 +38,24 @@ export function SidePane({
       <p className="text-2xl font-bold mt-4">Workout Details</p>
 
       <div className="flex flex-col gap-4">
-        <p className="text-lg text-white">Push day</p>
-        <MachineTimeline
-          workoutPlan={[
-            {
-              machine: "Back Row Machine 1",
-              arrival_time: 0,
-              free_time: 0,
-              wait_time: 0,
-              usage_start: 0,
-              usage_finish: 420,
-            },
-            {
-              machine: "Cable Pull Down 1",
-              arrival_time: 480,
-              free_time: 568,
-              wait_time: 88,
-              usage_start: 568,
-              usage_finish: 988,
-            },
-          ]}
-        />
+        <div className="flex flex-col gap-2">
+          <p className="text-lg text-white">Total Duration</p>
+          <p className="text-sm text-gray-400">
+            {hours > 0 ? `${hours}h ` : ""}
+            {minutes}min
+          </p>
+        </div>
+
+        {workoutData?.schedule && (
+          <MachineTimeline
+            workoutPlan={workoutData.schedule}
+            className="mt-4"
+          />
+        )}
 
         <div>
-          <p className="text-2xl font-bold">Time</p>
-          <p>
+          <p className="text-2xl font-bold">Time Window</p>
+          <p className="text-sm text-gray-400">
             {timeRange.startTime.getHours().toString().padStart(2, "0")}:00 →{" "}
             {timeRange.endTime.getHours().toString().padStart(2, "0")}:00
           </p>

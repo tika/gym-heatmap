@@ -24,19 +24,41 @@ const days = ["M", "T", "W", "T", "F", "S", "S"];
 
 type WorkoutSelectProps = {
   onNext: () => void;
+  makeWorkoutPlan: (workoutType: string | undefined, duration: number) => void;
 };
 
-export function WorkoutSelect({ onNext }: WorkoutSelectProps) {
+type Schedule = {
+  machine: string;
+  arrival_time: number;
+  free_time: number;
+  wait_time: number;
+  usage_start: number;
+  usage_finish: number;
+};
+
+type APIResponse = {
+  best_ordering: string[];
+  schedule: Schedule[];
+  total_wait: number;
+  total_duration: number;
+};
+
+export type WorkoutData = {
+  totalDuration: number;
+  schedule: Schedule[];
+};
+
+export function WorkoutSelect({ onNext, makeWorkoutPlan }: WorkoutSelectProps) {
   const [customWorkout, setCustomWorkout] = useState("");
   const [workoutType, setWorkoutType] = useState<
-    "push" | "pull" | "legs" | null
-  >("push");
+    "Push" | "Pull" | "Legs" | null
+  >("Push");
   const [selectedDay, setSelectedDay] = useState<keyof typeof days | null>(
     null
   );
   const [duration, setDuration] = useState<"30" | "45" | "60">("30");
 
-  function toggleWorkoutType(type: "push" | "pull" | "legs") {
+  function toggleWorkoutType(type: "Push" | "Pull" | "Legs") {
     if (workoutType === type) {
       setWorkoutType(null);
     } else {
@@ -54,45 +76,26 @@ export function WorkoutSelect({ onNext }: WorkoutSelectProps) {
 
   async function handleCreateWorkout() {
     try {
-      // First call to summarise endpoint
-      //   const summaryResponse = await fetch("/api/summarise", {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       workoutType: workoutType,
-      //       details: customWorkout.length === 0 ? null : customWorkout,
-      //     }),
-      //   });
+      //   First call to summarise endpoint
+      console.log(workoutType);
+      const summaryResponse = await fetch("/api/summarise", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          workoutType: workoutType,
+          details: customWorkout.length === 0 ? undefined : customWorkout,
+        }),
+      });
 
-      //   if (!summaryResponse.ok) {
-      //     throw new Error("Failed to summarize workout");
-      //   }
+      if (!summaryResponse.ok) {
+        throw new Error("Failed to summarize workout");
+      }
 
-      //   // Second call to create workout plan
-      //   const workoutResponse = await fetch(
-      //     "https://jumbogym.onrender.com/createWorkout",
-      //     {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({
-      //         muscle_group: workoutType,
-      //         workout_duration: parseInt(duration),
-      //       }),
-      //     }
-      //   );
+      // Second call to create workout plan
+      makeWorkoutPlan(workoutType?.toLowerCase(), parseInt(duration));
 
-      //   if (!workoutResponse.ok) {
-      //     throw new Error("Failed to create workout plan");
-      //   }
-
-      //   const workoutData = await workoutResponse.json();
-      //   console.log("Workout plan:", workoutData);
-
-      // Continue with navigation
       onNext();
     } catch (error) {
       console.error("Error creating workout:", error);
@@ -121,34 +124,34 @@ export function WorkoutSelect({ onNext }: WorkoutSelectProps) {
               variant="outline"
               className={cn(
                 "h-24 text-xl",
-                workoutType === "push" && "bg-muted border-primary"
+                workoutType === "Push" && "bg-muted border-primary"
               )}
-              onClick={() => toggleWorkoutType("push")}
+              onClick={() => toggleWorkoutType("Push")}
               type="button"
             >
-              push
+              Push
             </Button>
             <Button
               variant="outline"
               className={cn(
                 "h-24 text-xl",
-                workoutType === "pull" && "bg-muted border-primary"
+                workoutType === "Pull" && "bg-muted border-primary"
               )}
-              onClick={() => toggleWorkoutType("pull")}
+              onClick={() => toggleWorkoutType("Pull")}
               type="button"
             >
-              pull
+              Pull
             </Button>
             <Button
               variant="outline"
               className={cn(
                 "h-24 text-xl",
-                workoutType === "legs" && "bg-muted border-primary"
+                workoutType === "Legs" && "bg-muted border-primary"
               )}
-              onClick={() => toggleWorkoutType("legs")}
+              onClick={() => toggleWorkoutType("Legs")}
               type="button"
             >
-              legs
+              Legs
             </Button>
           </div>
 
