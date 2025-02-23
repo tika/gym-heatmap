@@ -68,14 +68,16 @@ export function Visualisation(props: VisualisationProps) {
   }, []);
 
   return (
-    <div className="flex p-24">
-      <div className="w-1/4 py-12 px-4 flex flex-col gap-8">
+    <div className="flex flex-col md:flex-row p-4 md:p-24 gap-4">
+      <div className="w-full md:w-1/4 py-4 md:py-12 px-4 flex flex-col gap-8 bg-muted">
         <div>
           <Button variant="ghost" size="icon" onClick={props.onBack}>
             <ArrowLeft />
           </Button>
           <p className="text-2xl font-bold mt-4">Workout Details</p>
-          <p className="text-gray-400">Your chosen workout on Friday</p>
+          <p className="text-gray-400">
+            An optimised workout has been generated for you
+          </p>
         </div>
         <div className="flex flex-col gap-2">
           <p
@@ -85,7 +87,7 @@ export function Visualisation(props: VisualisationProps) {
                 : "text-gray-400"
             }`}
           >
-            Push day with an emphasis on chest
+            Push day
           </p>
         </div>
         <div>
@@ -96,8 +98,8 @@ export function Visualisation(props: VisualisationProps) {
           </p>
         </div>
       </div>
-      <div className="relative w-3/4 h-full flex flex-col items-center">
-        <div className="w-full h-[60vh]">
+      <div className="relative w-full md:w-3/4 h-full flex flex-col items-center">
+        <div className="w-full h-[40vh] md:h-[60vh] border rounded-md">
           <Space selectedTime={selectedTime} gymData={visibleGymData} />
         </div>
         <Timeline
