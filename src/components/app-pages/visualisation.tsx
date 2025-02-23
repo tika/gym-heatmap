@@ -1,9 +1,8 @@
 "use client";
 
+import { SidePane } from "@/components/side-pane";
 import { Point, Space } from "@/components/space";
 import { Timeline, TimeRange } from "@/components/timeline";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 const TIME_WINDOW = 30; // seconds before and after current time
@@ -12,6 +11,8 @@ type VisualisationProps = {
   onBack: () => void;
 };
 
+const machines = {};
+
 export function Visualisation(props: VisualisationProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [timeRange, setTimeRange] = useState<TimeRange>({
@@ -19,10 +20,6 @@ export function Visualisation(props: VisualisationProps) {
     endTime: new Date("2025-02-22T11:00:00"), // 11am
   });
   const [selectedTime, setSelectedTime] = useState<Date>(timeRange.startTime);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedWorkout, setSelectedWorkout] = useState<
-    "Push" | "Pull" | "Legs"
-  >("Push");
 
   // Load fake gym data from fake_gym_data.csv
   const [allGymData, setAllGymData] = useState<Point[]>([]);
@@ -71,34 +68,8 @@ export function Visualisation(props: VisualisationProps) {
 
   return (
     <div className="flex flex-col md:flex-row p-4 md:p-24 gap-4">
-      <div className="w-full md:w-1/4 py-4 md:py-12 px-4 flex flex-col gap-8 bg-muted">
-        <div>
-          <Button variant="ghost" size="icon" onClick={props.onBack}>
-            <ArrowLeft />
-          </Button>
-          <p className="text-2xl font-bold mt-4">Workout Details</p>
-          <p className="text-gray-400">
-            An optimised workout has been generated for you
-          </p>
-        </div>
-        <div className="flex flex-col gap-2">
-          <p
-            className={`text-lg ${
-              selectedWorkout === "Push"
-                ? "font-bold text-white"
-                : "text-gray-400"
-            }`}
-          >
-            Push day
-          </p>
-        </div>
-        <div>
-          <p className="text-2xl font-bold">Time</p>
-          <p>
-            {timeRange.startTime.getHours().toString().padStart(2, "0")}:00 →{" "}
-            {timeRange.endTime.getHours().toString().padStart(2, "0")}:00
-          </p>
-        </div>
+      <div className="w-full md:w-1/4 py-4 px-4 flex flex-col gap-8 bg-black rounded-md">
+        <SidePane timeRange={timeRange} onBack={props.onBack} />
       </div>
       <div className="relative w-full md:w-3/4 h-full flex flex-col items-center">
         <div className="w-full h-[40vh] md:h-[60vh] border rounded-md">

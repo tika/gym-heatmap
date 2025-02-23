@@ -9,6 +9,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -46,16 +52,52 @@ export function WorkoutSelect({ onNext }: WorkoutSelectProps) {
     }
   }
 
-  function handleCreateWorkout() {
-    // Handle submission
-    console.log({
-      workoutType,
-      customWorkout,
-      selectedDay,
-      duration: `${duration} mins`,
-    });
+  async function handleCreateWorkout() {
+    try {
+      // First call to summarise endpoint
+      //   const summaryResponse = await fetch("/api/summarise", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       workoutType: workoutType,
+      //       details: customWorkout.length === 0 ? null : customWorkout,
+      //     }),
+      //   });
 
-    onNext();
+      //   if (!summaryResponse.ok) {
+      //     throw new Error("Failed to summarize workout");
+      //   }
+
+      //   // Second call to create workout plan
+      //   const workoutResponse = await fetch(
+      //     "https://jumbogym.onrender.com/createWorkout",
+      //     {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify({
+      //         muscle_group: workoutType,
+      //         workout_duration: parseInt(duration),
+      //       }),
+      //     }
+      //   );
+
+      //   if (!workoutResponse.ok) {
+      //     throw new Error("Failed to create workout plan");
+      //   }
+
+      //   const workoutData = await workoutResponse.json();
+      //   console.log("Workout plan:", workoutData);
+
+      // Continue with navigation
+      onNext();
+    } catch (error) {
+      console.error("Error creating workout:", error);
+      // Here you might want to show an error message to the user
+    }
   }
 
   return (
@@ -111,15 +153,16 @@ export function WorkoutSelect({ onNext }: WorkoutSelectProps) {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-xl text-foreground">
-              Or you can input something else... something custom
-            </h2>
+            <h2 className="text-xl text-foreground">Custom input</h2>
             <Input
               value={customWorkout}
               onChange={(e) => setCustomWorkout(e.target.value)}
               className="text-lg"
               placeholder="Custom workout..."
             />
+            <p className="text-sm text-muted-foreground">
+              Add custom details if you want a nuanced workout
+            </p>
           </div>
 
           <div className="space-y-4">
@@ -147,18 +190,39 @@ export function WorkoutSelect({ onNext }: WorkoutSelectProps) {
             </h2>
             <div className="w-full flex items-center justify-between">
               <div className="flex gap-6">
-                {days.map((day, index) => (
-                  <Button
-                    key={`day-${index}-${day}`}
-                    className="rounded-full"
-                    size="icon"
-                    variant={index === selectedDay ? "default" : "outline"}
-                    onClick={() => toggleSelectedDay(index)}
-                    type="button"
-                  >
-                    <p>{day}</p>
-                  </Button>
-                ))}
+                <TooltipProvider>
+                  {days.map((day, index) =>
+                    index === 6 ? (
+                      <Button
+                        key={`day-${index}-${day}`}
+                        className="rounded-full"
+                        size="icon"
+                        variant={index === selectedDay ? "default" : "outline"}
+                        onClick={() => toggleSelectedDay(index)}
+                        type="button"
+                      >
+                        <p>{day}</p>
+                      </Button>
+                    ) : (
+                      <Tooltip key={`day-${index}-${day}`}>
+                        <TooltipTrigger asChild>
+                          <Button
+                            className={cn("rounded-full opacity-50")}
+                            size="icon"
+                            variant="outline"
+                            disabled
+                            type="button"
+                          >
+                            <p>{day}</p>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Sorry we don't have data for that day yet!</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )
+                  )}
+                </TooltipProvider>
               </div>
               <Button
                 className="px-8"
