@@ -12,6 +12,7 @@ type SidePaneProps = {
 };
 
 export function SidePane({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   timeRange,
   onBack,
   workoutData,

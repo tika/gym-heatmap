@@ -37,13 +37,6 @@ type Schedule = {
   usage_finish: number;
 };
 
-type APIResponse = {
-  best_ordering: string[];
-  schedule: Schedule[];
-  total_wait: number;
-  total_duration: number;
-};
-
 export type WorkoutData = {
   totalDuration: number;
   schedule: Schedule[];
@@ -231,7 +224,7 @@ export function WorkoutSelect({
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Sorry we don't have data for that day yet!</p>
+                          <p>Sorry we don&apos;t have data for that day yet!</p>
                         </TooltipContent>
                       </Tooltip>
                     )

@@ -8,15 +8,6 @@ import { useEffect, useMemo, useState } from "react";
 
 const TIME_WINDOW = 30; // seconds before and after current time
 
-type Schedule = {
-  machine: string;
-  arrival_time: number;
-  free_time: number;
-  wait_time: number;
-  usage_start: number;
-  usage_finish: number;
-};
-
 type VisualisationProps = {
   onBack: () => void;
   workoutData: WorkoutData | null;

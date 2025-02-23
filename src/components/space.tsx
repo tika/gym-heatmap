@@ -29,7 +29,6 @@ type SpaceProps = {
 
 export function Space({ selectedTime, isPreview, gymData }: SpaceProps) {
   const [isMobile, setIsMobile] = useState(false);
-  const [allGymData, setAllGymData] = useState<Point[]>([]);
 
   // Load the texture
   const texture = useLoader(THREE.TextureLoader, "/jumbo.png");
@@ -44,49 +43,6 @@ export function Space({ selectedTime, isPreview, gymData }: SpaceProps) {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-
-  // Load gym data only once
-  useEffect(() => {
-    const loadGymData = async () => {
-      try {
-        const response = await fetch("/gym_data.csv");
-        const rows = await response.text();
-
-        // Create base time once outside the map
-        const baseTime = new Date();
-
-        const data = rows
-          .split("\n")
-          .slice(1)
-          .map((row) => {
-            const [x, y, z, timeSeconds, object, paired, role, state] =
-              row.split(",");
-
-            // Calculate time offset once
-            const actualTime = new Date(
-              baseTime.getTime() + parseInt(timeSeconds) * 1000
-            );
-
-            return {
-              x: parseFloat(x),
-              y: parseFloat(y),
-              z: parseFloat(z),
-              time: actualTime,
-              object: object,
-              paired: parseFloat(paired),
-              role: role as "person" | "machine",
-              state: state as "traveling" | "waiting" | "using",
-            };
-          });
-
-        setAllGymData(data);
-      } catch (error) {
-        console.error("Error loading gym data:", error);
-      }
-    };
-
-    loadGymData();
-  }, []); // Empty dependency array - only run once
 
   const cameraPosition = isMobile
     ? [floorSize / 2, 12, 0] // Higher and further back view for mobile
