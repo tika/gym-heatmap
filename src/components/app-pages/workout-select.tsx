@@ -2,6 +2,13 @@
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -21,6 +28,7 @@ export function WorkoutSelect({ onNext }: WorkoutSelectProps) {
   const [selectedDay, setSelectedDay] = useState<keyof typeof days | null>(
     null
   );
+  const [duration, setDuration] = useState<"30" | "45" | "60">("30");
 
   function toggleWorkoutType(type: "push" | "pull" | "legs") {
     if (workoutType === type) {
@@ -40,7 +48,12 @@ export function WorkoutSelect({ onNext }: WorkoutSelectProps) {
 
   function handleCreateWorkout() {
     // Handle submission
-    // TODO: API call to create workout
+    console.log({
+      workoutType,
+      customWorkout,
+      selectedDay,
+      duration: `${duration} mins`,
+    });
 
     onNext();
   }
@@ -97,35 +110,56 @@ export function WorkoutSelect({ onNext }: WorkoutSelectProps) {
             </Button>
           </div>
 
-          <Input
-            value={customWorkout}
-            onChange={(e) => setCustomWorkout(e.target.value)}
-            className="text-lg"
-            placeholder="Enter your custom workout..."
-          />
-
           <div className="space-y-4">
             <h2 className="text-xl text-foreground">
               Or you can input something else... something custom
             </h2>
-            <div className="flex gap-4">
-              <div className="w-full flex items-center justify-start">
-                <div className="flex gap-6">
-                  {days.map((day, index) => (
-                    <Button
-                      key={`day-${index}-${day}`}
-                      className="rounded-full"
-                      size="icon"
-                      variant={index === selectedDay ? "default" : "outline"}
-                      onClick={() => toggleSelectedDay(index)}
-                      type="button"
-                    >
-                      <p>{day}</p>
-                    </Button>
-                  ))}
-                </div>
-              </div>
+            <Input
+              value={customWorkout}
+              onChange={(e) => setCustomWorkout(e.target.value)}
+              className="text-lg"
+              placeholder="Custom workout..."
+            />
+          </div>
 
+          <div className="space-y-4">
+            <h2 className="text-xl text-foreground">
+              How long do you plan to work out?
+            </h2>
+            <Select
+              value={duration}
+              onValueChange={(value: "30" | "45" | "60") => setDuration(value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select duration" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="30">30 mins</SelectItem>
+                <SelectItem value="45">45 mins</SelectItem>
+                <SelectItem value="60">60 mins</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-xl text-foreground">
+              Which days do you prefer to work out?
+            </h2>
+            <div className="w-full flex items-center justify-between">
+              <div className="flex gap-6">
+                {days.map((day, index) => (
+                  <Button
+                    key={`day-${index}-${day}`}
+                    className="rounded-full"
+                    size="icon"
+                    variant={index === selectedDay ? "default" : "outline"}
+                    onClick={() => toggleSelectedDay(index)}
+                    type="button"
+                  >
+                    <p>{day}</p>
+                  </Button>
+                ))}
+              </div>
               <Button
                 className="px-8"
                 disabled={!customWorkout && !workoutType}
