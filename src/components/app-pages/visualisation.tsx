@@ -2,12 +2,17 @@
 
 import { Point, Space } from "@/components/space";
 import { Timeline, TimeRange } from "@/components/timeline";
+import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 const TIME_WINDOW = 30; // seconds before and after current time
 
-export function Visualisation() {
+type VisualisationProps = {
+  onBack: () => void;
+};
+
+export function Visualisation(props: VisualisationProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>({
     startTime: new Date("2025-02-22T10:00:00"), // 10am
     endTime: new Date("2025-02-22T11:00:00"), // 11am
@@ -66,7 +71,9 @@ export function Visualisation() {
     <div className="flex p-24">
       <div className="w-1/4 py-12 px-4 flex flex-col gap-8">
         <div>
-          <ArrowLeft />
+          <Button variant="ghost" size="icon" onClick={props.onBack}>
+            <ArrowLeft />
+          </Button>
           <p className="text-2xl font-bold mt-4">Workout Details</p>
           <p className="text-gray-400">Your chosen workout on Friday</p>
         </div>
@@ -78,30 +85,15 @@ export function Visualisation() {
                 : "text-gray-400"
             }`}
           >
-            Push
-          </p>
-          <p
-            className={`text-lg ${
-              selectedWorkout === "Pull"
-                ? "font-bold text-white"
-                : "text-gray-400"
-            }`}
-          >
-            Pull
-          </p>
-          <p
-            className={`text-lg ${
-              selectedWorkout === "Pull"
-                ? "font-bold text-white"
-                : "text-gray-400"
-            }`}
-          >
-            Legs
+            Push day with an emphasis on chest
           </p>
         </div>
         <div>
           <p className="text-2xl font-bold">Time</p>
-          <p>16:00 - 17:00</p>
+          <p>
+            {timeRange.startTime.getHours().toString().padStart(2, "0")}:00 →{" "}
+            {timeRange.endTime.getHours().toString().padStart(2, "0")}:00
+          </p>
         </div>
       </div>
       <div className="relative w-3/4 h-full flex flex-col items-center">
@@ -112,7 +104,7 @@ export function Visualisation() {
           timeRange={timeRange}
           onSelectedTimeChange={setSelectedTime}
         />
-            <p className="font-semibold mt-2">
+        <p className="font-semibold mt-2">
           Typical @ {selectedTime.toLocaleTimeString()}
         </p>
       </div>

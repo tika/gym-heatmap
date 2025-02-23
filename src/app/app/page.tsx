@@ -30,5 +30,9 @@ Leg:
 
 export default function App() {
   const [selectedWorkout, setSelectedWorkout] = useState(true);
-  return !selectedWorkout ? <WorkoutSelect /> : <Visualisation />;
+  return selectedWorkout ? (
+    <WorkoutSelect onNext={() => setSelectedWorkout(false)} />
+  ) : (
+    <Visualisation onBack={() => setSelectedWorkout(true)} />
+  );
 }
