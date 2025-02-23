@@ -29,10 +29,12 @@ type SpaceProps = {
 
 export function Space({ selectedTime, isPreview, gymData }: SpaceProps) {
   const [isMobile, setIsMobile] = useState(false);
+  const [allGymData, setAllGymData] = useState<Point[]>([]);
 
   // Load the texture
   const texture = useLoader(THREE.TextureLoader, "/jumbo.png");
 
+  // Handle mobile detection
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -40,9 +42,51 @@ export function Space({ selectedTime, isPreview, gymData }: SpaceProps) {
 
     checkMobile();
     window.addEventListener("resize", checkMobile);
-
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  // Load gym data only once
+  useEffect(() => {
+    const loadGymData = async () => {
+      try {
+        const response = await fetch("/gym_data.csv");
+        const rows = await response.text();
+
+        // Create base time once outside the map
+        const baseTime = new Date();
+
+        const data = rows
+          .split("\n")
+          .slice(1)
+          .map((row) => {
+            const [x, y, z, timeSeconds, object, paired, role, state] =
+              row.split(",");
+
+            // Calculate time offset once
+            const actualTime = new Date(
+              baseTime.getTime() + parseInt(timeSeconds) * 1000
+            );
+
+            return {
+              x: parseFloat(x),
+              y: parseFloat(y),
+              z: parseFloat(z),
+              time: actualTime,
+              object: object,
+              paired: parseFloat(paired),
+              role: role as "person" | "machine",
+              state: state as "traveling" | "waiting" | "using",
+            };
+          });
+
+        setAllGymData(data);
+      } catch (error) {
+        console.error("Error loading gym data:", error);
+      }
+    };
+
+    loadGymData();
+  }, []); // Empty dependency array - only run once
 
   const cameraPosition = isMobile
     ? [floorSize / 2, 12, 0] // Higher and further back view for mobile
@@ -116,7 +160,10 @@ export function Space({ selectedTime, isPreview, gymData }: SpaceProps) {
         {gymData
           ?.filter(({ role }) => role === "machine")
           .map(({ x, y, z, object, paired }, index) => (
-            <group key={`machine-${x}-${y}-${z}-${index}`} position={[x, y, z]}>
+            <group
+              key={`machine-${x}-${y}-${z}-${index}`}
+              position={[x - 20, y, z - 10]}
+            >
               <lineSegments>
                 <edgesGeometry
                   args={[new THREE.BoxGeometry(boxSize, boxSize, boxSize)]}
@@ -142,7 +189,7 @@ export function Space({ selectedTime, isPreview, gymData }: SpaceProps) {
             .filter(({ time }) => time.toString() === selectedTime.toString())
             .filter(({ state }) => state !== "finished")
             .map(({ x, y, z }, index) => (
-              <mesh key={index} position={[x, y, z]}>
+              <mesh key={index} position={[x - 20, y, z - 10]}>
                 <sphereGeometry args={[isMobile ? 0.15 : 0.1, 4, 4]} />
                 <meshStandardMaterial color="#ffffff" />
               </mesh>

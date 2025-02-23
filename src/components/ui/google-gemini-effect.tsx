@@ -22,11 +22,10 @@ export const GoogleGeminiEffect = ({
   return (
     <div className={cn("sticky top-80", className)}>
       <p className="text-lg md:text-7xl font-normal pb-4 text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-100 to-neutral-300">
-        {title || `Hello, Jumbo 🐘`}
+        {title || `Gymbo 🐘`}
       </p>
       <p className="text-xs md:text-xl font-normal text-center text-neutral-400 mt-4 max-w-lg mx-auto">
-        {description ||
-          `Next-gen motion detection using 4D element matricies and advanced ML for workout assistance in the blazing-fast Tisch Gymnasium`}
+        {description || `Next-generation, AI-powered collegiate fitness system`}
       </p>
       <div className="w-full h-[890px] -top-60 md:-top-40  flex items-center justify-center bg-red-transparent absolute ">
         <Link

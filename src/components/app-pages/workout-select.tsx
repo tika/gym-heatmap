@@ -50,7 +50,11 @@ export type WorkoutData = {
   summary?: string;
 };
 
-export function WorkoutSelect({ onNext, makeWorkoutPlan }: WorkoutSelectProps) {
+export function WorkoutSelect({
+  onNext,
+  makeWorkoutPlan,
+  setSummary,
+}: WorkoutSelectProps) {
   const [customWorkout, setCustomWorkout] = useState("");
   const [workoutType, setWorkoutType] = useState<
     "Push" | "Pull" | "Legs" | null

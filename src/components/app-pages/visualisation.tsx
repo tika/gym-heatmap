@@ -20,9 +20,14 @@ type Schedule = {
 type VisualisationProps = {
   onBack: () => void;
   workoutData: WorkoutData | null;
+  workoutSummary: string | null;
 };
 
-export function Visualisation({ onBack, workoutData }: VisualisationProps) {
+export function Visualisation({
+  onBack,
+  workoutData,
+  workoutSummary,
+}: VisualisationProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [timeRange, setTimeRange] = useState<TimeRange>({
     startTime: new Date(), // 10am
@@ -82,11 +87,11 @@ export function Visualisation({ onBack, workoutData }: VisualisationProps) {
           timeRange={timeRange}
           onBack={onBack}
           workoutData={workoutData}
+          workoutSummary={workoutSummary}
         />
       </div>
       <div className="relative w-full md:w-3/4 h-full flex flex-col items-center">
         <div className="w-full h-[40vh] md:h-[60vh] border rounded-md">
-          <p>{visibleGymData.length}</p>
           <Space selectedTime={selectedTime} gymData={visibleGymData} />
         </div>
         <Timeline

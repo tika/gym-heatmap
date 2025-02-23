@@ -75,13 +75,35 @@ export default function GoogleGeminiEffectDemo() {
           </p>
         </div>
       </div>
-      <div>
-        Created by Tika Capon, Anubhav Sinha, Daniel Siegel, Dean Hu, Marco
-        Dorazio
-        <Link href="...">Devpost</Link>
-        <Link href="https://github.com/tika/gymbo">Frontend</Link>
-        <Link href="https://github.com/tika/gymbobackend">Backend</Link>
-      </div>
+      <footer className="max-w-2xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+        <p className="text-gray-600">
+          Created by Tika Capon, Anubhav Sinha, Daniel Siegel, Dean Hu, Marco
+          Dorazio
+        </p>
+        <div className="flex gap-4">
+          <Link
+            href="..."
+            className="text-blue-500 hover:text-blue-600 transition-colors"
+            aria-label="View project on Devpost"
+          >
+            Devpost
+          </Link>
+          <Link
+            href="https://github.com/tika/gymbo"
+            className="text-blue-500 hover:text-blue-600 transition-colors"
+            aria-label="View frontend code on GitHub"
+          >
+            Frontend
+          </Link>
+          <Link
+            href="https://github.com/tika/gymbobackend"
+            className="text-blue-500 hover:text-blue-600 transition-colors"
+            aria-label="View backend code on GitHub"
+          >
+            Backend
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 }

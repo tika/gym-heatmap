@@ -8,9 +8,15 @@ type SidePaneProps = {
   timeRange: TimeRange;
   onBack: () => void;
   workoutData: WorkoutData | null;
+  workoutSummary: string | null;
 };
 
-export function SidePane({ timeRange, onBack, workoutData }: SidePaneProps) {
+export function SidePane({
+  timeRange,
+  onBack,
+  workoutData,
+  workoutSummary,
+}: SidePaneProps) {
   if (!workoutData) {
     return (
       <div className="h-full">
@@ -20,10 +26,11 @@ export function SidePane({ timeRange, onBack, workoutData }: SidePaneProps) {
             <span>Change Workout</span>
           </Button>
         </div>
+        <p className="text-2xl font-bold mt-4">Workout Details</p>
         <div className="flex flex-col items-center justify-center h-full">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <p className="text-sm text-muted-foreground mt-2 text-center">
-            Loading workout data (~30 seconds)...
+            Creating workout: {workoutSummary} (~30 seconds)...
           </p>
         </div>
       </div>
@@ -46,8 +53,8 @@ export function SidePane({ timeRange, onBack, workoutData }: SidePaneProps) {
       <p className="text-2xl font-bold mt-4">Workout Details</p>
 
       <div className="flex flex-col gap-4">
-        {workoutData.summary && (
-          <p className="text-lg text-white">{workoutData.summary}</p>
+        {workoutSummary && (
+          <p className="text-lg text-white">{workoutSummary}</p>
         )}
 
         <div className="flex flex-col gap-2">
