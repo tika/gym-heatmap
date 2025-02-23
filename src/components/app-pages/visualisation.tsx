@@ -2,6 +2,7 @@
 
 import { Point, Space } from "@/components/space";
 import { Timeline, TimeRange } from "@/components/timeline";
+import { ArrowLeft } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 const TIME_WINDOW = 30; // seconds before and after current time
@@ -65,7 +66,8 @@ export function Visualisation() {
     <div className="flex p-24">
       <div className="w-1/4 py-12 px-4 flex flex-col gap-8">
         <div>
-          <p className="text-2xl font-bold">Workout Details</p>
+          <ArrowLeft />
+          <p className="text-2xl font-bold mt-4">Workout Details</p>
           <p className="text-gray-400">Your chosen workout on Friday</p>
         </div>
         <div className="flex flex-col gap-2">
@@ -110,7 +112,7 @@ export function Visualisation() {
           timeRange={timeRange}
           onSelectedTimeChange={setSelectedTime}
         />
-        <p className="font-semibold mt-2">
+            <p className="font-semibold mt-2">
           Typical @ {selectedTime.toLocaleTimeString()}
         </p>
       </div>

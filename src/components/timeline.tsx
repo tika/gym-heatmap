@@ -53,7 +53,7 @@ export function Timeline({ timeRange, onSelectedTimeChange }: TimelineProps) {
           const rect = e.currentTarget.getBoundingClientRect();
           const x = e.clientX - rect.left;
           const percentage = Math.min(Math.max((x / rect.width) * 100, 0), 100);
-          setSlidePercentage(Math.round(percentage));
+          setSlidePercentage(Math.round(percentage * 100) / 100);
         }}
       >
         <div
